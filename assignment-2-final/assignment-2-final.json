@@ -1,0 +1,93 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2017-06-04T12:15:41Z",
+    "title": "assignment-2"
+  },
+  "host": "l4k2t02ick.execute-api.REGION.amazonaws.com",
+  "basePath": "/dev",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Assignment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Assignment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            }
+          }
+        },
+        "x-amazon-apigateway-request-validator": "Validate body",
+        "x-amazon-apigateway-integration": {
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseTemplates": {
+                "application/json": "#set($inputRoot = $input.path('$'))\n{\n  \"age\" : null,\n  \"height\" : null,\n  \"income\" : $inputRoot\n}"
+              }
+            }
+          },
+          "requestTemplates": {
+            "application/json": "#set($inputRoot = $input.path('$'))\n{\n  \"income\" : $inputRoot.income\n}"
+          },
+          "uri": "arn:aws:apigateway:REGION:lambda:path/2015-03-31/functions/arn:aws:lambda:REGION:ACCOUNT_ID:function:a2-store-data/invocations",
+          "passthroughBehavior": "when_no_templates",
+          "httpMethod": "POST",
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Assignment": {
+      "type": "object",
+      "required": [
+        "age",
+        "height",
+        "income"
+      ],
+      "properties": {
+        "age": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        },
+        "income": {
+          "type": "integer"
+        }
+      },
+      "title": "CompareData"
+    },
+    "Empty": {
+      "type": "object",
+      "title": "Empty Schema"
+    }
+  },
+  "x-amazon-apigateway-request-validators": {
+    "Validate body": {
+      "validateRequestParameters": false,
+      "validateRequestBody": true
+    }
+  }
+}
